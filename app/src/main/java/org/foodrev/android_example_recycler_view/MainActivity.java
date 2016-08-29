@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.foodrev.android_example_recycler_view.JSONHelpers.JSONAsyncRequest;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
@@ -38,24 +40,14 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
 
-        //sample dataset -- in this case string array
-
-        String[] myDataset = new String[100];
-
-        for (int i=0; i < 100; i++ ) {
-            myDataset[i] = "Entry: " + i;
-        }
-
-
-
-        //specify an adapter
-        mAdapter = new MyAdapter(myDataset);
-        mRecyclerView.setAdapter(mAdapter);
+        //adapter code moved to JSON Async Request
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                new JSONAsyncRequest(MainActivity.this, mRecyclerView).execute();
+
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
