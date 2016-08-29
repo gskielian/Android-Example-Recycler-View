@@ -3,7 +3,6 @@ package org.foodrev.android_example_recycler_view;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SearchViewCompatIcs;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +36,17 @@ public class MainActivity extends AppCompatActivity {
         //using linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+
+        //sample dataset -- in this case string array
+
+        String[] myDataset = new String[100];
+
+        for (int i=0; i < 100; i++ ) {
+            myDataset[i] = "Entry: " + i;
+        }
+
+
 
         //specify an adapter
         mAdapter = new MyAdapter(myDataset);

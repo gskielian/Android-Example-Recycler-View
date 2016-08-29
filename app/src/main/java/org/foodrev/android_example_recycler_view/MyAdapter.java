@@ -15,9 +15,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextView;
-        public ViewHolder(TextView v) {
+
+        public ViewHolder(View v) {
             super(v);
-            mTextView = v;
+            mTextView = (TextView) v.findViewById(R.id.my_text_view);
         }
     }
 
@@ -37,7 +38,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         //... TODO Above
 
-        ViewHolder vh = new ViewHolder((TextView) v);
+        ViewHolder vh = new ViewHolder(v);
         return vh;
 
     }
