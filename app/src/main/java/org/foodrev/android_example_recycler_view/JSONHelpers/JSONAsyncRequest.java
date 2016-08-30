@@ -13,6 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.foodrev.android_example_recycler_view.MyAdapter;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +35,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -287,33 +294,31 @@ public class JSONAsyncRequest extends AsyncTask<String, Void, String> {
 
     //update UI here
     protected void onPostExecute(String result){
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(result);
-//        String[] myDataset = {sb.toString()};
-//
-//        //specify an adapter
-//        mAdapter = new MyAdapter(myDataset);
-//        mRecyclerView.setAdapter(mAdapter);
+        String[] myDataset = parse(result);
+
+        //specify an adapter
+        mAdapter = new MyAdapter(myDataset);
+        mRecyclerView.setAdapter(mAdapter);
         Toast.makeText(this.context, result, Toast.LENGTH_SHORT).show();
-//
-//
-//        mAdapter.notifyDataSetChanged();
+
+
+        mAdapter.notifyDataSetChanged();
 
     }
 
-//    public String parse(String jsonLine) {
-//        JsonElement jelement = new JsonParser().parse(jsonLine);
-//        JsonObject jobject = jelement.getAsJsonObject();
-//        jobject = jobject.getAsJsonObject("Plan_A");
-//        String result = jobject.get("center_a").toString();
-//        JsonElement jelement = new JsonParser().parse(jsonLine);
-//        JsonObject jobject = jelement.getAsJsonObject();
-//        jobject = jobject.getAsJsonObject("data");
-//        JsonArray jarray = jobject.getAsJsonArray("translations");
-//        jobject = jarray.get(0).getAsJsonObject();
-//        String result = jobject.get("translatedText").toString();
-//        return result;
-//    }
+     public String[] parse(String jsonLine) {
+         List<String> planStepsList = new ArrayList<String>();
+        JsonElement jElement = new JsonParser().parse(jsonLine);
+        JsonObject jObject = jElement.getAsJsonObject();
+        JsonArray jArray = jObject.getAsJsonArray("plan_steps");
+         int i=0;
+         for (JsonElement entry : jArray) {
+             planStepsList.add(entry.toString());
+         }
+         String[] myDataset = new String[planStepsList.size()];
+         myDataset = planStepsList.toArray(myDataset);
+        return  myDatasetff;
+    }
 
 
 }
