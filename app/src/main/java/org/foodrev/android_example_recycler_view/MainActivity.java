@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
@@ -40,10 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         //sample dataset -- in this case string array
 
-        String[] myDataset = new String[100];
+        ArrayList<String> myDataset = new ArrayList<String>(100);
 
-        for (int i=0; i < 100; i++ ) {
-            myDataset[i] = "Entry: " + i;
+        myDataset.add("hello");
+        for (int i=1; i < 100; i++ ) {
+            myDataset.add(i,"Entry: " + i);
         }
 
 
