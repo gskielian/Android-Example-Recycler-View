@@ -38,7 +38,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Created by magulo on 5/30/16.
  */
@@ -317,10 +316,6 @@ public class JSONAsyncRequest extends AsyncTask<String, Void, String> {
          }
          String[] myDataset = new String[planStepsList.size()];
          myDataset = planStepsList.toArray(myDataset);
-        return  myDatasetff;
+        return  myDataset;
     }
-
-
 }
-
-
