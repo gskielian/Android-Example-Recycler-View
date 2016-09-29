@@ -37,6 +37,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by magulo on 5/30/16.
@@ -57,7 +59,9 @@ public class JSONAsyncRequest extends AsyncTask<String, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
     }
-    @Override protected String doInBackground(String... urls) {
+
+    @Override
+    protected String doInBackground(String... urls) {
         String result = null;
         try {
             result = doPut2("http://ec2-52-25-100-113.us-west-2.compute.amazonaws.com:5000/plan");
@@ -292,14 +296,14 @@ public class JSONAsyncRequest extends AsyncTask<String, Void, String> {
     }
 
     //update UI here
+    @Override
     protected void onPostExecute(String result){
         String[] myDataset = parse(result);
 
         //specify an adapter
         mAdapter = new MyAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
-        Toast.makeText(this.context, result, Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(this.context, result, Toast.LENGTH_LONG).show();
 
         mAdapter.notifyDataSetChanged();
 
@@ -310,12 +314,64 @@ public class JSONAsyncRequest extends AsyncTask<String, Void, String> {
         JsonElement jElement = new JsonParser().parse(jsonLine);
         JsonObject jObject = jElement.getAsJsonObject();
         JsonArray jArray = jObject.getAsJsonArray("plan_steps");
-         int i=0;
+
          for (JsonElement entry : jArray) {
              planStepsList.add(entry.toString());
          }
          String[] myDataset = new String[planStepsList.size()];
+
          myDataset = planStepsList.toArray(myDataset);
+
+         for(int i =0; i<myDataset.length; i++){
+             myDataset[i] = formatString(myDataset[i]);
+         }
+
         return  myDataset;
+    }
+
+    public String formatString(String unformattedLine){
+        String formattedLine = unformattedLine;
+        String firstWord = "a";
+
+        Pattern regex = Pattern.compile("^\\S+\\s*(\\S+)\\s*(\\S+)\\s*(\\S+)\\s*(\\S+)\\s*(\\S+).*$");
+        Matcher matcher = regex.matcher(unformattedLine);
+        while(matcher.find()){
+            firstWord = matcher.group(1);
+        }
+
+        //categorize types of lines
+        if (firstWord.equals("DRIVE")){
+            formattedLine = "";
+            matcher = regex.matcher(unformattedLine);
+            while(matcher.find()){
+                formattedLine += matcher.group(2);
+                formattedLine += " drives from ";
+                formattedLine += matcher.group(4);
+                formattedLine += " to ";
+                formattedLine += matcher.group(5);
+            }
+        }
+        else if (firstWord.equals("LOAD")){
+            formattedLine = "";
+            matcher = regex.matcher(unformattedLine);
+            while(matcher.find()){
+                formattedLine += matcher.group(2);
+                formattedLine += " loads from ";
+                formattedLine += matcher.group(3);
+                formattedLine += matcher.group(4);
+            }
+        }
+        else if (firstWord.equals("UNLOAD")){
+            formattedLine = "";
+            matcher = regex.matcher(unformattedLine);
+            while(matcher.find()){
+                formattedLine += matcher.group(2);
+                formattedLine += " unloads from ";
+                formattedLine += matcher.group(3);
+                formattedLine += matcher.group(4);
+            }
+        }
+
+        return formattedLine;
     }
 }
