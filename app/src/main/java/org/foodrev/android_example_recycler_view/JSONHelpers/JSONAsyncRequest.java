@@ -330,46 +330,22 @@ public class JSONAsyncRequest extends AsyncTask<String, Void, String> {
     }
 
     public String formatString(String unformattedLine){
-        String formattedLine = unformattedLine;
-        String firstWord = "a";
+        String formattedLine = "";
+        String wordArray[] = unformattedLine.replaceAll("\"", "").replaceAll(":","").split("\\s+");
+        Integer stepNum = Integer.parseInt(wordArray[0]);
+        String firstWord = wordArray[1];
 
-        Pattern regex = Pattern.compile("^\\S+\\s*(\\S+)\\s*(\\S+)\\s*(\\S+)\\s*(\\S+)\\s*(\\S+).*$");
-        Matcher matcher = regex.matcher(unformattedLine);
-        while(matcher.find()){
-            firstWord = matcher.group(1);
-        }
 
         //categorize types of lines
         if (firstWord.equals("DRIVE")){
-            formattedLine = "";
-            matcher = regex.matcher(unformattedLine);
-            while(matcher.find()){
-                formattedLine += matcher.group(2);
-                formattedLine += " drives from ";
-                formattedLine += matcher.group(4);
-                formattedLine += " to ";
-                formattedLine += matcher.group(5);
-            }
+            formattedLine += wordArray[2] + " " + wordArray[1] + "s from "
+                    + wordArray[4] + " to " + wordArray[5];
         }
         else if (firstWord.equals("LOAD")){
-            formattedLine = "";
-            matcher = regex.matcher(unformattedLine);
-            while(matcher.find()){
-                formattedLine += matcher.group(2);
-                formattedLine += " loads from ";
-                formattedLine += matcher.group(3);
-                formattedLine += matcher.group(4);
-            }
+            formattedLine += wordArray[2] + " " + wordArray[1] + "s from "  + wordArray[3];
         }
         else if (firstWord.equals("UNLOAD")){
-            formattedLine = "";
-            matcher = regex.matcher(unformattedLine);
-            while(matcher.find()){
-                formattedLine += matcher.group(2);
-                formattedLine += " unloads from ";
-                formattedLine += matcher.group(3);
-                formattedLine += matcher.group(4);
-            }
+            formattedLine += wordArray[2] + " " + wordArray[1] + "s from " + wordArray[3];
         }
 
         return formattedLine;
