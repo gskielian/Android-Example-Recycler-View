@@ -1,5 +1,6 @@
 package org.foodrev.android_example_recycler_view;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;

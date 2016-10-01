@@ -37,7 +37,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by magulo on 5/30/16.
@@ -58,7 +59,9 @@ public class JSONAsyncRequest extends AsyncTask<String, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
     }
-    @Override protected String doInBackground(String... urls) {
+
+    @Override
+    protected String doInBackground(String... urls) {
         String result = null;
         try {
             result = doPut2("http://ec2-52-25-100-113.us-west-2.compute.amazonaws.com:5000/plan");
@@ -293,14 +296,14 @@ public class JSONAsyncRequest extends AsyncTask<String, Void, String> {
     }
 
     //update UI here
+    @Override
     protected void onPostExecute(String result){
         String[] myDataset = parse(result);
 
         //specify an adapter
         mAdapter = new MyAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
-        Toast.makeText(this.context, result, Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(this.context, result, Toast.LENGTH_LONG).show();
 
         mAdapter.notifyDataSetChanged();
 
@@ -311,16 +314,40 @@ public class JSONAsyncRequest extends AsyncTask<String, Void, String> {
         JsonElement jElement = new JsonParser().parse(jsonLine);
         JsonObject jObject = jElement.getAsJsonObject();
         JsonArray jArray = jObject.getAsJsonArray("plan_steps");
-         int i=0;
+
          for (JsonElement entry : jArray) {
              planStepsList.add(entry.toString());
          }
          String[] myDataset = new String[planStepsList.size()];
+
          myDataset = planStepsList.toArray(myDataset);
-        return  myDatasetff;
+
+         for(int i =0; i<myDataset.length; i++){
+             myDataset[i] = formatString(myDataset[i]);
+         }
+
+        return  myDataset;
     }
 
+    public String formatString(String unformattedLine){
+        String formattedLine = "";
+        String wordArray[] = unformattedLine.replaceAll("\"", "").replaceAll(":","").split("\\s+");
+        Integer stepNum = Integer.parseInt(wordArray[0]);
+        String firstWord = wordArray[1];
 
+
+        //categorize types of lines
+        if (firstWord.equals("DRIVE")){
+            formattedLine += wordArray[2] + " " + wordArray[1] + "s from "
+                    + wordArray[4] + " to " + wordArray[5];
+        }
+        else if (firstWord.equals("LOAD")){
+            formattedLine += wordArray[2] + " " + wordArray[1] + "s from "  + wordArray[3];
+        }
+        else if (firstWord.equals("UNLOAD")){
+            formattedLine += wordArray[2] + " " + wordArray[1] + "s from " + wordArray[3];
+        }
+
+        return formattedLine;
+    }
 }
-
-
